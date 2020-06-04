@@ -1,3 +1,5 @@
+DENNO FIRESTORE APP
+=============
 This is an example of a webapp and how you can use web apps to do important stuff offline just like most of the native apps.
 
 At first this app contains a add quote or yor notes where you can add notes and quotes offline or online and it updates in realtime.
