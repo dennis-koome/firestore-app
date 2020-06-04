@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="manifest" href="manifest.json">
+
+	<style type="text/css">
+
+		/*------------------------------timetable wrapper div-----------------------------*/
+		#wrapper2{width:78%; margin-left: 20%; margin-top: 40px; margin-bottom: 40px; display:none; background-color:#1d4c66; padding-top: 5px}
+		table{border-left:solid 2px #fff; margin-left: 5px; padding-bottom: 10px  }
+		#tablediv{width:99%; overflow-x: scroll; }
+		th, td{ padding:5px 15px; color:#121822; border-right: solid 2px #e3e3e3; font-family: Helvetica; text-align: center}
+		td { color:#e3e3e3;}
+		tr:nth-child(2n){ background-color: #245c7b }
+		tr td:first-child{font-weight: bold; padding-left: 1px; padding-right: 1px; text-align: center; border-right: solid 2px #e3e3e3}
+		tr:first-child{font-weight: bold;}
+		.thead{border-bottom: solid 2px #fff; color:#fff;}
+		#days, #edit{color:#fff; border-bottom: solid 2px #fff}
+		.editTmtable{min-width:60px;}
+
+		#tform{display: none;}
+		#toggtmtablefrm{width:100%; line-height: 30px; margin:5px 10% 0px 0px; background-image: url("btnback.jpg"); color:#fff; font-size: 16px; font-weight: bold; border:none;}
+		#tfrm{width:100%; height:320px; overflow-y: scroll; background-image: url("btnback.jpg"); background-repeat: no-repeat; background-size: cover}
+		#tform label    {color:#000; width:80%; display:block; margin-bottom: 1px; font-family: Georgia}
+		#tform ul {padding:20px; background-color: #fff; width:40%; margin-left: auto; margin-right: auto;}
+		#tform li       {list-style-type:none; display:block; width:100%; margin-bottom: 10px}
+		#tform input    {width:100%; background-color:#f1f1f1; float:none;}
+		#tform textarea    {width:100%; height:150px; background-color:#f1f1f1; border:solid 1px #ccc;}
+		#tform .submit  {width:100%; color:#000; background-color:#aac2fb; font-weight:700; font-size:18px; border-radius: 1px}
+		#tform .submit:hover {border:#f00 solid 1px}
+		#tform select   {width:100%; background-color:#f1f1f1; height:25px;}
+		#catwrapper2 h4{font-family: Helvetica; color:#fff; text-align: center; border-bottom: solid 1px #ccc; padding-bottom: 1px}
+		#catwrapper2 h4 span{border-bottom: solid 2px #fff}
+		#catwrapper2 {display:none;}
+		blockquote{font-style: italic; font-family: Comic Sans MS;}
+
+		#tmtconfig{display: none}
+
+		#addconfigs,#tmtdeditconfid{width:90%; height: 100%; box-sizing: border-box; display:flex; flex-direction: column; margin-left: auto; margin-right: auto; padding:10px; background-color: #055c89; display: block;}
+		#tmtdeditconfid{ display: block; margin-bottom: 10px;}
+		#tmtdeditconfid ul{margin-top:3px; margin-bottom:3px; padding-left: 15px; padding-bottom: 10px; padding-top: 10px}
+		#disconfigs li{font-size: 12px; border-bottom: dotted 1px #000}
+
+		#tmtbitemscon,#todoitemscon{width:90%; height: 100%; box-sizing: border-box; display:flex; flex-direction: column; margin-left: auto; margin-right: auto; padding:10px; background-color: #027ebe;}
+		#todoitemscon{max-height:350px; overflow-y: scroll}
+		#addconfigs input{ border-radius:0px; width:90%; margin-bottom: 5px; background-color: #eeeeee; }
+		#addconfigs .submt{background-color: #2b526a; color:#fff; float:none; width:90%; margin-left: 2.5%}
+		#tmtbitemsbook,#todoitemsbook{padding: 5px 10px; background-color: #eeeeee}
+		#tmtbitemsbook ul, #todoitemsbook ul{padding-left: 10px}
+		#tmtbitemsbook ul li{border-bottom: solid 1px #000;}
+		#additemsboxes, #todoboxes{display:none; width:100%;}
+		#todoboxes{margin-bottom: 110px;}
+		/*#addboxtodo{border:solid 1px #fff; width:80%; padding:10px; margin-left: 5%;}*/
+		#addboxtodobg{border:solid 1px #fff; width:50%; margin-left: 25%; margin-right: 25%; padding:10px;}
+		#addboxtodo input,#addboxtodobg input{margin-bottom: 5px; width:90%;}
+		#addboxtodo textarea,#addboxtodobg textarea{margin-bottom: 5px; width:90%; height:150px;}
+		#addboxtodo select,#addboxtodobg select{margin-bottom: 5px; width:90%;}
+		#addboxtodobg .todosubmit{margin-top: 10px; width:15%; margin-left: 42%;}
+		#todoboxes h4{color:#000; font-family: Georgia; margin-top: 5px; margin-bottom: 5px; border-bottom:solid 1px #000;}
+		#todoboxes ul{margin-top: 5px; margin-bottom: 5px}
+		.respo{color:#00ff54; font-style: italic; font-size:13px; text-align: center; font-family: Comic Sans MS}
+		#todolistmainprev{padding-top: 10px; padding-bottom:10px; margin-top: 20px; width:80%; margin-left:10%; margin-right:10%; background-color: #d4dbdf; padding:5px 10px;}
+		#todolistmainprev h4{text-align:center; font-size: 20px; margin-bottom: 10px; border-bottom:solid 1px #5d6e78;}
+		#todolistmainprev .todomainpre{ background-color:#a9b6bd; margin-top:10px; border-radius: 10px; padding: 10px; }
+
+
+	/*------------------------------timetable wrapper div-----------------------------*/
+
+
+		#wrapper1, #testing{width:60%; margin-left: 20%; margin-top: 40px;}
+		#wrapper1sort{width:60%; margin-left: 20%; margin-top: 40px; }
+		#mainitems{border-bottom: solid 2px #fff;}
+		#mainitems ul{margin-top: 5px; margin-bottom: 0px; padding-left: 0px; width:80%; padding-left: 10%;}
+		#mainitems ul li{list-style-type: none; color:#fff; font-family: Helvetica; font-size: 14px; display:inline-block; border:solid 1px #fff; font-weight: bold; padding:2px 5px;}
+		body{background-color: #f7f7f7}
+		#quotecon{border-bottom: solid 2px #000; padding:10px; margin-bottom: 30px; background-color: #eeeeee; border-radius: 30px}
+		#title{border-bottom: solid 1px #a2a1a1;}
+		#quote{padding-top: 10px; padding-bottom: 10px;}
+		#info{height:15px; border-top: solid 1px #a2a1a1;}
+		#comment{width:15%; float:left; margin-left: 5%}
+		#author{width:40%; float:left; }
+		#commentdiv{width: 98%; margin-bottom:5px; visibility: hidden; display: none}
+		input{width:40%;  float:left; border:solid 1px #696969; border-radius: 20px; padding:3px 6px;}
+		#names{margin-right:2%;}
+		#date{width:30%; float:left;}
+		#clear{clear: both}
+		#quotecon #quote .nts p{color:#151515; font-size: 14px; font-family:georgia; line-height: 18px; margin-bottom:5px; margin-top: 5px}
+		#quotecon h1{font-size: 19px; margin-bottom: 5px; font-family: georgia;}
+		#quotecon ol, #quotecon ul{margin-top: 8px}
+		#quotecon h3{font-size: 18px; font-family: georgia; margin-bottom: 0px}
+		#quote .qts{color:#272727;  font-family:Comic Sans MS; font-style: italic; text-align: center; white-space: pre-wrap; }
+		#quote ul{margin-top: 5px; margin-bottom:14px; font-family:georgia; font-size: 14px}
+		#quote ul li{line-height: 18px}
+		#info p{font-size: 10px;}
+		#vcomments{padding-left: 10%; border-top:solid 1px #696969; margin-bottom: 5px }
+		#vcomments .row{padding:10px 0px; border-bottom:dotted 1px #696969; }
+		#vcomments .row p{font-size: 11px;}
+		#vcomments .row #tcomment{margin-left:30px;}
+		#topmenu{width:100%; background-color:#1a3749; height:36px; position:fixed; z-index: 2; left:0px; right:0px; top:0px; color:#fff;}
+		.row{width:50%; margin-left: 25%; }
+		.menuitems{float:left; width:25%; text-align: center; border:solid 1px #fff; line-height: 100%; line-height: 26px; margin-top: 4px; border-radius: 20px; background-color: #102633; cursor:pointer;}
+		#cerror{font-style: italic; color:#f00; font-size: 13px; text-align: center}
+		#topmenu #addq{margin-left: 24%; margin-right:1%;}
+		#catwindow{left:0px; width:18%; height:100vh; overflow-y: scroll; background-color: #113f5c; position:fixed; top:36px; border: solid 1px #000; z-index: 100}
+		#catwindow .catr{width:100%; font-family:tahoma; margin-top:5px; margin-bottom:5px; line-height:30px; font-size: 14px; color:#e3e0e0; text-align: center; border-bottom: solid 1px #dddddd}
+		#addcates p{color:#fff; font-weight: bold; font-size: 14px; margin-top: 20px}
+		#addtmtbleitem p{color:#fff; font-weight: bold; font-size: 14px; margin-top: 20px}
+		.addsign{font-size: 18px; margin-left: 5px; border-radius: 100%; padding:2px 8px 2px 4px; border:solid 1px #fff;}
+		.catsubmit{width:80px; height:40px; border-radius: 0px; background-image: url(send.png); background-size: cover; background-color: transparent; border:none;}
+		#catname,#itemname{width:140px; height:20px; margin-left: 8px}
+		#addbox{margin-top: 15px; visibility:hidden; opacity:0; transition: all .8s linear}
+		#addboxitem,#addboxtodo{margin-top: 15px;}
+		#catresponsediv,#itemresponsediv{font-size: 12px; font-style: italic; color:#57e800;}
+		#responsed{width:100%;}
+		#addquotewrapper,#addquotewrapperedit{overflow-y: scroll; width:100%; height:99.3vh; display:none; background-color:rgba(0,0,0,0.9); position: fixed; top:36px;}
+		.formattodowrapper{width:100%; height:100vh;  background-color:rgba(0,0,0,0.7); position: fixed; top:36px; z-index: 101; left:0; display: none; overflow-y: scroll }
+		.todoinsidewr{width:18%; height:100%; background-color:rgba(0,0,0,0.7);}
+		#frminedt{width:400px; border:solid 1px #fff; margin-left: 10%; margin-top: 35px}
+		#frminedt ul{padding-left: 5px}
+		#frminedt input{width:94%; float: none; border-radius: 2px}
+		#frminedt .submit{width:30%; margin-left:30%; margin-right:30%;}
+		#frminedt label{color:#fff;}
+		#editfrmdiv{width: 82%; margin-left:17.5%; height: 100%; background-color: rgba(0,0,0,0.7);}
+		#todoinedit #frmtdoedit{height:420px; border-bottom:solid 1px #e3e3e3; width:80%; margin-left: 8%; padding:10px 1%; padding-top: 50%;} 
+		#todoinedit #frmtdoedit input{width:90%; border-radius: 0px; background-color: #e3e3e3;}
+		#todoinedit #frmtdoedit textarea{width:94%; border-radius: 0px; height:200px; background-color: #e3e3e3;}
+		#todoinedit #frmtdoedit label{color: #fff; text-align: center; width:100%; font-size: 12px}
+		#editing{width:100%; margin-top: 5px}
+		#editing ul{width:16%; padding-left: 0px; margin-top: 0px; margin-bottom: 0px; float:right;}
+		#editing ul li{display: inline-block; width:46%; border-right: 1px solid #00f; text-align: center; font-size: 12px; font-weight: bold}
+		.decat{float:right; font-weight: bold; margin-right: 2px; border:dotted 1px #ccc; padding-left: 5px; padding-right: 5px;line-height: 20px; font-size: 10px}
+		.readmore{background-color: #7a9ef2; padding-right: 2px; border-radius: 5px}
+		#todoitemsbook ul li{font-size: 12px;}
+		#respedttodo{padding-top: 10px}
+		#respedttodo p{color:#fff; font-size: 12px; }
+
+
+
+		/*---------DELETE QUOTE DIALOG BOX------------------*/
+		#dialog{position:fixed; left:0px; right:0px; top:0px; bottom:0px; background-color:rgba(0,0,0,0.8); display:none;}
+		#dmessage{position:absolute; background-color:#fff; min-width: 30%; min-height: 30px; border-radius: 20px; padding:10px;}
+		#dmessage p{text-align: center}
+		#dmessage button{width:40%;}
+
+
+		/*-----------ADD AND EDIT QUOTE FORM CSS---------------------*/
+			#frmadd,#frmedit {width:90%; margin-left:auto; margin-right:auto; border:solid 1px #fff;  padding:5px; border-radius:15px}
+			#frmadd input,#frmadd select, #frmedit input,#frmedit select {width: 90%; height:26px; border:1px solid #123123;  border-radius: 0px}
+			#frmadd .submit, #frmedit .submit {width:100px; border-radius:10px; height:30px; float:right; margin-top: 10px}
+			#frmadd textarea, #frmedit textarea{width:90%; border-radius: 0px; height: 100px;}
+			h2 {text-align:center;}
+			#frmadd label, #frmedit label {font-weight:bold; font-family:tahoma;}
+			#wrapperin, #wrapperinedit{
+					width: 60%;
+					margin-left: 20%;
+					color:#fff;
+				}
+
+			#toedit,#toeditedit{ width:30%; height:45px; border-bottom:solid 2px #000; margin-left: 35%; margin-top: 40px; border-radius: 20px; background-color:#ccc; box-shadow: -4px 6px 10px 7px #888888}
+			#toedit h2, #toeditedit h2{font-size: 16px; margin-top: 0px; margin-bottom: 0px; line-height: 45px; color:#000;}
+			#resp{color:#71ff66; font-style: italic; font-family: tahoma; font-weight: bold;}
+			#topmenu #catz{display:none;}
+			#insrtbrk{
+				border-top: solid 1px #ccc;
+				margin-top:10px;
+				padding-top: 10px;
+			}
+
+			#insrtbrk label{
+				text-align: center;
+				width:100%;
+				color:#e8e8e8;
+				display:block;
+			}
+
+			#insrtbrk select{
+				width:100%;
+				margin-bottom: 5px;
+				background-color: #e8e8e8;
+			}
+
+
+		@media only screen and (max-width: 500px){
+				#wrapper1{
+					width: 96%;
+					margin-left: 2%;
+				}
+
+				#wrapper1sort{
+					width: 96%;
+					margin-left: 2%;
+				}
+
+				#quote .qts{font-size:14px;}
+
+				#mainitems ul{margin-top: 5px; margin-bottom: 0px; padding-left: 0px; width:90%; padding-left: 5%;}
+				#mainitems ul li{list-style-type: none; color:#fff; font-family: Helvetica; display:inline-block; border:solid 1px #fff; font-weight: bold; padding:2px 5px; font-size: 15px;}
+
+				.row{width:100%; margin-left: 0px;}
+				#catwindow{width:60%; margin-bottom: 100px; left:-61%; transition: all .5s ease; opacity:0;}
+				#catforeground{position:fixed; top:0px; opacity: 0; bottom:0px; left:-40%; right:100.5%;  background-color: rgba(0,0,0,0.9); transition: all .5s ease;}
+				#catwrapper{width:100%; height:850px;}
+				.catsubmit{width:80px; height:40px; margin-left: 65%}
+				#catname,#itemname{width:90%; height:20px; margin-left: 3%}
+				.sendbtn{margin-left: 60%; margin-top: 5px; }
+				#topmenu #catz{width:40px; display: block; height:36px; border:0px; background-color: transparent;}
+				#addboxtodobg{width:100%; margin-left: 0px; margin-right:0px; padding:0px; }
+				#addboxtodobg .todosubmit{ width:40%; margin-left: 30%; margin-right: 30%; height:30px; }
+
+				#topmenu #addq{width:35%; margin-left: 5%}
+				#topmenu #addc{width:35%; }
+				body{margin:0px;}
+				#editing ul{width:30%;}
+
+				#quotecon { width:94%; overflow-x: scroll; }
+				#author{width:auto;}
+
+				/*-----------ADD QUOTE FORM CSS---------------------*/
+				#wrapperin,#wrapperinedit{
+					width: 100%;
+					height:100%;
+					margin-left: 0px;
+					overflow-y: scroll;
+				}
+
+				#frmadd,#frmedit{height:950px; width:auto; border:none;}
+
+				#toedit,#toeditedit{ width:70%; margin-top: 80px; height:30px; margin-left: 15%; border-radius: 20px; background-color:#ccc;}
+				#toeditedit{margin-top: -150px;}
+				#toedit h2, #toeditedit h2 {font-size: 14px; line-height: 30px}
+				.decat{margin-right: 10px;}
+
+
+				/*------------------------------timetable wrapper div-----------------------------*/
+				#wrapper2{width:100%; margin-left:0px;}
+				.table{width: 600px;}
+				#tablediv{width:99%; overflow-x: scroll; }
+				#tform ul {padding:20px; background-color: #fff; width:80%; margin-left: auto; margin-right: auto; }
+				#toggtmtablefrm{width:100%; line-height: 30px; margin:5px 0px 0px 0px;  font-size: 14px; font-weight: bold}
+				th, td{ padding:3px 5px;}
+				#todoitemscon{width:96%; padding:3px;}
+				#todoitemscon{max-height:300px;}
+				/*------------------------------timetable wrapper div-----------------------------*/
+				/*#todoinedit{width:100%; height:100%; background-color:rgba(0,0,0,0.6);}*/
+				.todoinsidewr{width:100%; height:100%; background-color:rgba(0,0,0,0.6);}
+				#todolistmainprev{width:87%; margin-left:3%; margin-right: 5%; }
+
+			}
+
+		</style>
+	</head>
+<body>
+
+	<div id="dialog">
+		<div id="dmessage">
+		</div>
+	</div>
+
+<div id="topmenu">
+	<div class="row">
+		<div class="menuitems" id="catz"><img src="menu.png"></div>
+		<div onclick="toggleaddquote();" class="menuitems" id="addq">Add Quote</div>
+		<div onclick="toggleaddcateg();" class="menuitems" id="addc">Add ToDo Item</div>
+	</div>
+</div>
+
+<div id="catwindow">
+	<div id="mainitems">
+		<ul>
+			<li onclick="shwquotes();">QUOTES</li>
+			<li onclick="shwtimetable();">TIMETABLE</li>
+		</ul>
+	</div>
+
+	<div id="catwrapper">
+		<p class="catr" onclick="getQuotes()">All Quotes</p>
+
+		<div id="catlist">
+		</div>
+		
+		<div id="addcates">
+			<p onclick="toggleaddcat()">Add category<span class="addsign" id="addsign">+</span></p>
+		</div>
+
+		<div id="addbox">
+			<input type="text" id="catname" placeholder="Type category to add">
+			<input type="submit" class="catsubmit" value="." onclick="insertcat();">
+			<p id="catresponsediv"></p>
+		</div>
+	</div><!--end of catwarapper-->
+
+	<div id="catwrapper2">
+		<h4 onclick="toggleconfigtime();"><span>Timetable Configuration</span><span class="addsign" id="shwconfigtime">+</span></h4>
+
+
+
+
+
+		<div id="tmtconfig">
+
+			<div id="tmtdeditconfid">
+				<div style="color:#000; background-color:#fff" id="dispconfig">
+					<ul id="disconfigs">
+					</ul>
+				</div>
+			</div>
+
+			<div id="addconfigs">
+
+				<label style="color:#fff">Colomn No:</label><input type="text" id="colNo"><br>
+
+			<div id="Stime">
+				<label style="color:#fff;">Start Time:</label><br>
+				<select id="startHrs" style="float: left; width:45%; height: 23px; background-color: #eeeeee">
+					<option>HRS</option>
+					<option>01</option>
+					<option>02</option>
+					<option>03</option>
+					<option>04</option>
+					<option>05</option>
+					<option>06</option>
+					<option>07</option>
+					<option>08</option>
+					<option>09</option>
+					<option>10</option>
+					<option>11</option>
+					<option>12</option>
+					<option>13</option>
+					<option>14</option>
+					<option>15</option>
+					<option>16</option>
+					<option>17</option>
+					<option>18</option>
+					<option>19</option>
+					<option>20</option>
+					<option>21</option>
+					<option>22</option>
+					<option>23</option>
+					<option>24</option>
+				</select>
+				<input id="strtMin" onkeyup="this.value=this.value.replace(/[^0-9.]/,'');checkTmLmt(this.value);" style="float:left; width:45%" type="text" min="1" max="60" placeholder="00">
+			</div><!--end of starttime div-->
+
+
+				<label style="color:#fff;">Session Length:</label><br>
+				<select id="sessHrs" style="float: left; width:45%; height: 23px; background-color: #eeeeee">
+					<option>HRS</option>
+					<option value="0">0 hrs</option>
+					<option value="1">1 hr</option>
+					<option value="2">2 hrs</option>
+					<option value="3">3 hrs</option>
+					<option value="4">4 hrs</option>
+					<option value="5">5 hrs</option>
+					<option value="6">6 hrs</option>
+					<option value="7">7 hrs</option>
+					<option value="8">8 hrs</option>
+				</select>
+				<input id="sessMin" onkeyup="this.value=this.value.replace(/[^0-9.]/,'');checkTmLmt(this.value);" style="float:left; width:45%" type="number" min="0" max="60" placeholder="MINUTES">
+
+				<input type="submit" onclick="sendtableconfig();" class="submt" value="Add Colomn">
+				<div class="respo" id="configrespons"></div>
+
+			</div>
+	</div><!--end of add config div-->
+
+		
+
+
+		<h4 onclick="toggleshwitems();"><span>Timetable Items</span><span class="addsign" id="shwitems">+</span></h4>
+
+		<div id="additemsboxes">
+			<div id="tmtbitemscon">
+				<div id="tmtbitemsbook">
+					<ul id="tmtbitemsbookul"></ul>
+				</div>
+			</div>
+
+					<div id="addboxitem">
+						<input type="text" id="itemname" placeholder="Type Timetable Item">
+						<input type="submit" class="catsubmit" value="." onclick="insertitem();">
+						<div id="clear"></div>
+						<p id="itemresponsediv"></p>
+					</div>
+		</div><!--end of additemsboxes-->
+
+
+		<h4 onclick="toggletodolist();"><span>To Do List</span><span class="addsign" id="shwtodo">+</span></h4>
+
+		<div id="todoboxes">
+			<div id="todoitemscon">
+				<div id="todoitemsbook">
+					
+				</div>
+			</div>
+
+		</div><!--end of additemsboxes-->
+
+	</div><!--end of catwarapper 2-->
+</div>
+
+<div id="catforeground">
+</div>
+
+
+	<div id="addquotewrapperedit">
+			<div id="wrapperinedit">
+			
+				<div id="frmedit">
+					<h2>EDIT QUOTES CONSOLE</h2>
+
+					<label>Quote or Note:</label><br>
+					<input type="text" id="type"><br><br><br>
+
+					<label>Title:</label><br>
+					<input type="text" id="title"><br><br><br>
+
+					<label>Quote:</label><br>
+					<textarea id="messageedt"></textarea><br><br><br>
+
+					<label>Author:</label><br>
+					<input type="text" id="author"><br><br><br>
+
+					<label>Quote Category:</label><br>
+					<!--<div id="catq"></div>-->
+					
+					<input type="text" id="cat">
+
+					<input type="submit" name="submit" class="submit" value="EDIT QUOTE">
+
+					<div id="responsed"><p id="respd"></p></div>
+
+				</div>
+
+				<div id="toeditedit" onclick="exitaddq();">
+					<h2>EXIT EDIT QUOTE</h2>
+				</div>
+		</div>
+	</div>
+
+
+
+	<div id="todowrapperedit" class="formattodowrapper">
+		<div class="todoinsidewr" id="todoinedit">
+
+			<div id="frmtdoedit">
+				<h4 onclick="remvTdoEdt()" style="color:#ff74c6; margin-top: 5px; border-top:dotted 1px #e1e1e1; border-bottom:dotted 1px #e1e1e1; float:right; padding:0px 5px; font-size: 16px">EXIT</h4>
+				<div id="clear"></div>
+				<h3 style="color:#04dfff; border-bottom:solid 1px #ccc; margin-bottom: 10px">Todo Item Edit</h3>
+				<label>Todo Category</label><br><input id="tDoCatin" type="text" name="" value=""><br><br>
+				<label>Todo List Item</label><br><textarea id="tDoItmin" name="" value=""></textarea>
+				<input id="editTdo" style="width:80%; float:none; clear: both; margin-left: 10%; background-color: #04dfff" type="submit" value="Edit ToDo Item">
+				<div id="respedttodo"></div>
+			</div>
+		</div>
+	</div>
+
+
+
+	<div id="addtodowrapper" class="formattodowrapper">
+			<div id="addboxtodobg">
+						<select id="todocatz">
+							<option value="" selected="true" disabled="disabled">Select To Do List Category</option>
+						</select>
+						<textarea id="todoname"></textarea>
+
+						<input type="submit" class="todosubmit" value="Send TODO Item" onclick="inserttodo();">
+						<div id="clear"></div>
+						<p style="font-size: 12px; color:#57e800" id="itemresponsedivtdo"></p>
+			</div>
+	</div>
+
+
+	<div id="cmfrmDelTodo" class="formattodowrapper">
+		<div style="padding-top: 20%" class="todoinsidewr" id="todoindel">
+			<div id="rusuretodo">				
+				<p style="color:#fff; font-size: 14px; font-style: italic; font-weight: bold">Are you sure you want to delete This todo list item?</p>
+				<button id="deleteTodo" style="width:45%; line-height:20px">YES</button><button id="dontdeleteTodo" style="width:45%; line-height:20px">NO</button>
+			</div>
+		</div>
+	</div>
+
+	<div id="edittmdata" class="formattodowrapper">
+		<button style="float:right; margin-right: 10%; margin-top:10px; width:70px; height:30px" id="closeedt">CLOSE</button>
+
+		<div id="editfrmdiv">
+			
+			<div id="frminedt">
+				<div id="editTimeTitle"></div>
+				<ul div id="frminedtul">
+
+
+					<!--<li>
+						<input type="submit" id="" value="Edit Timetable" class="submit"><br>
+					</li>-->
+
+				</ul>
+
+				<input id="submittimetablechanges" type="submit" value="Edit Values" class="submit">
+
+			</div>
+		</div>
+
+	</div>
+
+
+
+	<div id="addquotewrapper">
+			<div id="wrapperin">
+			
+				<div id="frmadd">
+					<h2>My Quotes Console</h2>
+
+					<label>Quote or Note:</label><br>
+					<select id="type">
+						<option value="quote">Quote</option>
+						<option value="note">Notes</option>
+					</select><br><br><br>
+
+					<label>Title:</label><br>
+					<input type="text" id="title"><br><br><br>
+
+					<label>Quote:</label><br>
+					<textarea name="message" id="message"></textarea><br><br><br>
+
+					<label>Author:</label><br>
+					<input type="text" id="author"><br><br><br>
+
+					<label>Quote Category:</label><br>
+					<!--<div id="catq"></div>-->
+					
+					<select id="cat">
+
+					</select><br><br>
+
+
+					<input type="submit" onclick="insertQuote(); return false" name="submit" class="submit" value="ADD QUOTE">
+
+					<div id="response"><p id="resp"></p></div>
+
+					<div id="toedit" onclick="toggleaddquote();">
+					<h2>VIEW THE QUOTES - HOME</h2>
+				</div>
+
+				</div>
+
+				
+		</div>
+	</div>
+
+
+
+	<div id="wrapper1">
+	</div><!--end of wrapper1-->
+
+
+	<div id="testing">
+	</div>
+
+	<div id="wrapper1sort">
+	</div><!--end of wrapper1-->
+
+
+	<div id="wrapper2">
+		<div id="tablediv">
+		<table id="table" class="table" cellspacing="0" >	
+		</table>
+	</div><!--end of the table div-->
+
+
+<!--=========================show or hide timetable add form=================-->
+<button onclick="toggadditm();" id="toggtmtablefrm">OPEN TO ADD ITEMS TO YOUR TIMETABLE</button>
+
+<!--============================titmetable form ====================================-->
+<div id="tform">
+ <form id="tfrm" method="post" action="" name="timetable">
+	<ul id="tfrmul">
+	</ul>
+</form>
+</div><!-----end of div form--->
+
+<div id="todolistmainprev">
+	<h1 style="text-align: center; font-size: 24px; border-bottom: #00f 2px solid; font-weight: bold">My Daily To Do List</h1>
+</div>
+
+</div><!---end of wrapper 2-->
+
+
+
+<script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/6.3.3/firebase-firestore.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+
+  var firebaseConfig = {
+    apiKey: "Your configuration key here",
+    authDomain: "youproject id.firebaseapp.com",
+    databaseURL: "you database url.firebaseio.com",
+    projectId: "your project id here",
+    storageBucket: "strage buckt.appspot.com",
+    messagingSenderId: "796455644444",
+    appId: "your app id here"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+
+</script>
+
+
+<script src="script.js" type="text/javascript"></script>
+<script src="ckeditor/ckeditor.js"></script>
+<script type="text/javascript">
+	getQuotes();
+	getcategs();
+	togglecat();
+	clickoutmenu();	
+
+	//var messagi = document.getElementById("message");
+	var frmadd = document.getElementById("frmadd");
+	var frmedit = document.getElementById("frmedit");
+	var frmchildedt = frmedit.children;
+	var frmchild = frmadd.children;
+	var messagi	= frmchild[15];
+	var messageeledt = frmchildedt[15];
+	CKEDITOR.replace(messagi);
+
+	CKEDITOR.replace(messageeledt);
+	CKEDITOR.replace(todoname);
+
+</script>
+<script src="to-title-case.js"></script>
+<script src="serviceWorker.js" type="text/javascript"></script>
+
+</body>
+
+
+
+
+
+</html>

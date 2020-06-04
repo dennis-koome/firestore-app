@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style type="text/css">
+		.testdv{
+			width:200px;
+			height:30px;
+			background-color: #000;
+			margin-bottom: 5px;
+		}
+		.testdvn{
+			width:200px;
+			height:30px;
+			background-color: #f00;
+			margin-bottom: 5px;
+
+		}
+
+		#parenti{
+			border:solid 1px #000;
+		}
+	</style>
+</head>
+<body>
+	<div id="parenti">
+		<div class="testdv" id="div1">
+		</div>
+		<div class="testdv" id="div2">
+		</div>
+	</div>
+
+	<button onclick="insrtb4()">INSERT DIV IN THE MIDDLE</button>
+
+</body>
+
+<script type="text/javascript">
+
+	function insrtb4(){
+		var parenti=document.getElementById("parenti");
+		var bodyz = document.body;
+		var div2=document.getElementById("div2");
+		var divcntr=document.createElement("div");
+		
+		
+		divcntr.className="testdvn";
+		//console.log(bodyz);
+		parenti.insertBefore(divcntr,div2);
+	}
+	
+</script>
+</html>
